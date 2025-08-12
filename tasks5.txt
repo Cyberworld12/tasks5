@@ -1,0 +1,46 @@
+Summary of Findings – DNS, TCP, and HTTP Traffic
+1. DNS (Domain Name System)
+
+Total Packets: 370
+Message Types:
+
+    Queries: 185 (50%)
+
+    Responses: 185 (50%)
+    Query Types:
+
+    AAAA (IPv6): 134 (36.22%)
+
+    HTTPS service: 121 (32.70%)
+
+    A (IPv4): 115 (31.08%)
+    Observations:
+
+    All DNS responses returned “No Error”.
+
+    Mix of IPv4 and IPv6 lookups indicates dual-stack browsing.
+
+    Some queries for deeper subdomains (CDNs, tracking).
+
+2. TCP (Transmission Control Protocol)
+
+Notable Connections:
+
+    Multiple TCP segments exchanged between 2401:4900:7c8e:… (your host) and 2a03:2880:f288:… (likely Facebook/Meta IPv6 address) over port 443 (HTTPS).
+
+    Large payload sizes (1243 bytes per segment in many cases).
+
+    Includes PSH, ACK, and retransmissions, suggesting active data transfer.
+    Observations:
+
+    TLSv1.2 sessions over TCP 443 indicate encrypted HTTPS traffic.
+
+    At least one TCP retransmission was observed, possibly due to packet loss or network delay.
+
+3. HTTP (Hypertext Transfer Protocol)
+
+From the TCP streams, some traffic likely carried HTTP before encryption (e.g., HTTP over TLS). In this capture:
+
+    No plain HTTP (tcp.port == 80) traffic visible — all web traffic was encrypted.
+
+    Any HTTP-like requests were encapsulated in TLS, meaning Wireshark showed them as Application Data and could not parse content without the server’s keys.
